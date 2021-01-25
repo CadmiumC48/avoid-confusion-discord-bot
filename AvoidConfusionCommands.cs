@@ -53,14 +53,19 @@ namespace AvoidConfusion
             int result = context.Client.Ping;
             var _embed = new DiscordEmbedBuilder();
             var random = new Random();
+            var stopwatch = new Stopwatch();
             (float r, float g, float b) = (((float)random.NextDouble()), ((float)random.NextDouble()), ((float)random.NextDouble()));
 
             try
             {
+                stopwatch.Start();
+                await context.RespondAsync(content: "Botun mesaj gecikmesi süresi ölçülüyor...");
+                stopwatch.Stop();
                 _embed.Color = new Optional<DiscordColor>(new DiscordColor(r, g, b));
                 _embed.Title = "Botun cevap verme süresi ölçülüyor...";
                 _embed.Author = new() { Name = "AvoidConfusion - Karmaşaları çözen Discord botu." };
-                _embed.AddField("Bot Gecikme Süresi (milisaniye):", $"{result} ms");
+                _embed.AddField("Bot Gecikme Süresi:", TimeSpan.FromMilliseconds(result).ToString());
+                _embed.AddField("Mesaj Gecikmesi:",stopwatch.ElapsedTime.ToString());
                 _embed.Description = $"{result} ms içinde yanıt verildi.";
                 _ = await context.RespondAsync(embed: _embed.Build());
             }
